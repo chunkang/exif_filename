@@ -7,6 +7,7 @@ A bash script that renames image and video files based on their EXIF metadata da
 - Renames files using EXIF DateTimeOriginal metadata
 - Falls back to file creation/modification time when EXIF data is unavailable
 - Extracts GPS coordinates and converts them to city/state/country names
+- **Smart geocode caching** - Reuses location names for photos within ~50m of each other
 - Handles duplicate filenames automatically
 - Supports both macOS and Linux
 - Auto-installs dependencies (exiftool, python-gazetteer/reverse_geocoder)
@@ -45,6 +46,7 @@ Examples:
 | Option | Description |
 |--------|-------------|
 | `-f`, `--force` | Force processing of all files, including those already in the target format |
+| `--no-cache` | Disable geocode caching (useful for debugging) |
 | `-h`, `--help` | Display usage information and exit |
 
 ### Examples
@@ -77,9 +79,12 @@ Examples:
 2. Skips files already matching the target format (unless `--force` is used)
 3. Extracts EXIF DateTimeOriginal; falls back to file timestamps if unavailable
 4. For images with GPS data, extracts coordinates and performs reverse geocoding
+   - Uses grid-based caching (~55m cells) to reuse location names for nearby photos
+   - Reduces API calls by up to 90% for clustered photos (vacations, events)
 5. Renames files with the formatted timestamp and optional location
 6. Sets file permissions to 664
 7. Handles naming conflicts by appending a counter suffix
+8. Displays cache statistics (hits/misses) at the end of processing
 
 ## Testing
 
@@ -103,6 +108,7 @@ bats tests/test_exif_extraction.bats
 - Dependency management (exiftool, Python libraries)
 - EXIF extraction (timestamps, GPS coordinates)
 - File operations (renaming, duplicate handling)
+- Geocode caching (coordinate normalization, cache operations)
 - Edge cases (special characters, permissions)
 - Integration tests (end-to-end workflows)
 

@@ -22,6 +22,7 @@ exif_filename/
 │   ├── reports/                # Generated reports
 │   └── specs/                  # SPEC documents
 ├── tests/                      # Test suite (bats-core)
+│   ├── test_cache.bats
 │   ├── test_core_infrastructure.bats
 │   ├── test_dependency_management.bats
 │   ├── test_edge_cases.bats
@@ -32,7 +33,7 @@ exif_filename/
 ├── README.md                   # Project documentation
 ├── .gitignore                  # Git ignore patterns
 ├── .mcp.json                   # MCP server configuration
-└── exif_filename.sh            # Main script (729 LOC)
+└── exif_filename.sh            # Main script (936 LOC)
 ```
 
 ## Directory Purposes
@@ -152,9 +153,10 @@ Python Components
 | Project documentation | Complete |
 | README.md | Complete |
 | Directory structure | Complete |
-| `exif_filename.sh` | **Complete** (729 LOC) |
+| `exif_filename.sh` | **Complete** (936 LOC) |
 | Python geocoding integration | **Complete** (Gazetteer + reverse_geocoder fallback) |
-| Test suite | **Complete** (82 tests via bats-core) |
+| Geocode caching | **Complete** (Grid-based proximity caching) |
+| Test suite | **Complete** (114 tests via bats-core) |
 
 ## File Naming Conventions
 
