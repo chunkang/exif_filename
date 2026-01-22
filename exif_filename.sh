@@ -412,12 +412,20 @@ geocode_coordinates() {
     fi
 
     python3 -c "
+from contextlib import redirect_stdout
+from io import StringIO
+
 # Try Gazetteer first (boundary-based, more accurate)
 try:
-    from gazetteer import Gazetteer
-    gz = Gazetteer()
+    # Suppress stdout during import and initialization
+    with redirect_stdout(StringIO()):
+        from gazetteer import Gazetteer
+        gz = Gazetteer()
     coords = [($lon, $lat)]  # Gazetteer uses (lon, lat) format
-    for result in gz.search(coords):
+    # Suppress stdout during search
+    with redirect_stdout(StringIO()):
+        results = list(gz.search(coords))
+    for result in results:
         name = result.get('name', '').replace(' ', '_')
         admin1 = result.get('admin1', '').replace(' ', '_')
         cc = result.get('cc', '').replace(' ', '_')
@@ -431,8 +439,13 @@ except Exception:
 
 # Fallback to reverse_geocoder (point-based)
 try:
-    import reverse_geocoder as rg
-    result = rg.search(($lat, $lon))[0]
+    # Suppress stdout during import (catches 'Loading formatted geocoded file...')
+    with redirect_stdout(StringIO()):
+        import reverse_geocoder as rg
+    # Suppress stdout during search
+    with redirect_stdout(StringIO()):
+        result = rg.search(($lat, $lon))[0]
+    # Clean output only
     name = result.get('name', '').replace(' ', '_')
     admin1 = result.get('admin1', '').replace(' ', '_')
     cc = result.get('cc', '').replace(' ', '_')
@@ -577,7 +590,8 @@ process_file() {
             lat=$(echo "$gps_coords" | cut -d' ' -f1)
             lon=$(echo "$gps_coords" | cut -d' ' -f2)
 
-            location=$(geocode_coordinates "$lat" "$lon")
+            # Use tail -n 1 as backup filter in case any debug output slips through
+            location=$(geocode_coordinates "$lat" "$lon" | tail -n 1)
 
             if [[ -z "$location" ]]; then
                 log_warn "Geocoding failed for: $filename"
