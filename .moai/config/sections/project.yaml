@@ -1,0 +1,9 @@
+project:
+  name: exif_filename
+  description: ''
+  type: ''
+  locale: '{{LOCALE}}'
+  created_at: '2026-01-22T10:26:57.550419Z'
+  initialized: 'true'
+github:
+  profile_name: chunkang

@@ -9,7 +9,7 @@ A bash script that renames image and video files based on their EXIF metadata da
 - Extracts GPS coordinates and converts them to city/state/country names
 - Handles duplicate filenames automatically
 - Supports both macOS and Linux
-- Auto-installs dependencies (exiftool, reverse_geocoder)
+- Auto-installs dependencies (exiftool, python-gazetteer/reverse_geocoder)
 
 ## Output Format
 
@@ -22,7 +22,7 @@ Examples:
 
 ## Supported File Types
 
-**Images:** jpg, jpeg, png, tiff, tif, raw, cr2, nef, arw
+**Images:** jpg, jpeg, png, tiff, tif, raw, cr2, cr3, nef, arw, sr2, rw2, orf, raf, dng, heic
 
 **Videos:** mov, mp4
 
@@ -45,6 +45,7 @@ Examples:
 | Option | Description |
 |--------|-------------|
 | `-f`, `--force` | Force processing of all files, including those already in the target format |
+| `-h`, `--help` | Display usage information and exit |
 
 ### Examples
 
@@ -64,10 +65,11 @@ Examples:
 
 ## Dependencies
 
-- **exiftool** - Automatically installed via Homebrew (macOS) or apt/yum/dnf (Linux)
-- **Python 3** - Required for GPS reverse geocoding
-- **reverse_geocoder** - Python library, auto-installed if missing
-- **numpy** - Python library, auto-installed if missing
+- **exiftool** - Automatically installed via Homebrew (macOS) or apt/yum/dnf/pacman (Linux)
+- **Python 3.6+** - Required for GPS reverse geocoding
+- **python-gazetteer** - Primary geocoding library (boundary-based, more accurate)
+- **reverse_geocoder** - Fallback geocoding library when Gazetteer unavailable
+- **scipy** - Required dependency for python-gazetteer
 
 ## How It Works
 
@@ -78,6 +80,31 @@ Examples:
 5. Renames files with the formatted timestamp and optional location
 6. Sets file permissions to 664
 7. Handles naming conflicts by appending a counter suffix
+
+## Testing
+
+The project includes a comprehensive test suite using [bats-core](https://github.com/bats-core/bats-core):
+
+```bash
+# Install bats-core
+brew install bats-core  # macOS
+# or
+apt install bats       # Linux
+
+# Run all tests
+bats tests/
+
+# Run specific test file
+bats tests/test_exif_extraction.bats
+```
+
+**Test Coverage:**
+- Core infrastructure (argument parsing, OS detection)
+- Dependency management (exiftool, Python libraries)
+- EXIF extraction (timestamps, GPS coordinates)
+- File operations (renaming, duplicate handling)
+- Edge cases (special characters, permissions)
+- Integration tests (end-to-end workflows)
 
 ## License
 
