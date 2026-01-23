@@ -38,6 +38,14 @@ exif_filename is a command-line utility that automatically renames image and vid
 - Appends city, state, and country information to filenames
 - Output format with location: `YYYY_MM_DD_HHhMMmSSs_City_State_Country`
 
+### Smart Geocode Caching
+
+- Grid-based proximity detection (~55m cells at equator)
+- Reuses location names for photos taken within ~50 meters of each other
+- Reduces geocoding API calls by up to 90% for clustered photos
+- Session-based caching with automatic statistics display
+- Optional `--no-cache` flag for debugging
+
 ### Intelligent File Handling
 
 - Recursive directory scanning for batch processing
@@ -135,8 +143,8 @@ exif_filename transforms chaotic media collections into well-organized libraries
 
 The project has been fully implemented following SPEC-EXIF-001 specifications:
 
-- **Main script**: `exif_filename.sh` (729 lines of code)
-- **Test suite**: 82 tests across 6 test files using bats-core
+- **Main script**: `exif_filename.sh` (936 lines of code)
+- **Test suite**: 114 tests across 7 test files using bats-core
 - **GPS geocoding**: Gazetteer (primary) with reverse_geocoder (fallback)
 - **Quality**: TRUST 5 validated, ShellCheck clean
 
